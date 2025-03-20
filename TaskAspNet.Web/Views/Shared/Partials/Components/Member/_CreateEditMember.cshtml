@@ -1,0 +1,142 @@
+﻿@model MemberDto
+
+@{
+    
+    var formAction = Model.Id > 0 ? "Edit" : "Create";
+}
+
+
+
+<div class="wrapper-member-form">
+    <form asp-action="@formAction"
+          asp-controller="Member"
+          method="post"
+          enctype="multipart/form-data"
+          id="projectForm"
+          novalidate>
+
+        @Html.AntiForgeryToken()
+
+        
+        <div asp-validation-summary="All" class="text-danger"></div>
+
+        
+        <input type="hidden" asp-for="Id" />
+
+        <!-- Hidden fields for image data -->
+        <input type="hidden" asp-for="ImageData.CurrentImage" id="hiddenCurrentImage" />
+        <input type="hidden" asp-for="ImageData.SelectedImage" id="hiddenSelectedImage" />
+        <input type="file" asp-for="ImageData.UploadedImage" id="fileInput" style="display: none;" accept="image/*" />
+
+        
+        @* <div class="group"> *@
+            <div class="image-upload" id="openUploadModal" data-modal="uploadModal">
+                <div class="wrapper-camera">
+                    <i class="fa-solid fa-camera"></i>
+                </div>
+            </div>
+
+            
+            <img id="cameraPreview"
+                 src="@(!string.IsNullOrWhiteSpace(Model.ImageData?.CurrentImage)
+                       ? Model.ImageData.CurrentImage
+                       : "/images/default.png")"
+                 alt="Preview"
+                 style="max-width:80px; margin-left:8px;" />
+        @* </div> *@
+
+        
+
+        @await Html.PartialAsync("~/Views/Shared/Partials/Components/_UploadSelectImgModal.cshtml", Model.ImageData)
+
+       
+        <div class="form-group">
+            <div class="input-box">
+                <label asp-for="FirstName">First Name</label>
+                <input asp-for="FirstName" class="form-control" required placeholder="Project Name" />
+                <span asp-validation-for="FirstName" class="text-danger"></span>
+            </div>
+            <div class="input-box">
+                <label asp-for="LastName">Last Name</label>
+                <input asp-for="LastName" class="form-control" required placeholder="Project Name" />
+                <span asp-validation-for="LastName" class="text-danger"></span>
+            </div>
+        </div>
+
+        
+        <div class="form-group">
+            <label asp-for="Email">Email</label>
+            <input asp-for="Email" class="form-control" required placeholder="Client Name" />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Phone">Phone</label>
+            <input asp-for="Phone" class="form-control" required placeholder="Client Name" />
+            <span asp-validation-for="Phone" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="JobTitleId">Job Title</label>
+            <select asp-for="JobTitleId" asp-items="@Model.AvailableJobTitles" class="form-control" required>
+                <option value="">-- Choose a Title --</option>
+            </select>
+            <span asp-validation-for="JobTitleId" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Address">Address</label>
+            <input asp-for="Address" class="form-control" required placeholder="Client Name" />
+            <span asp-validation-for="Address" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <div class="input-box">
+                <label asp-for="ZipCode">Zip Code</label>
+                <input asp-for="ZipCode" class="form-control" required placeholder="Project Name" />
+                <span asp-validation-for="ZipCode" class="text-danger"></span>
+            </div>
+            <div class="input-box">
+                <label asp-for="City">City</label>
+                <input asp-for="City" class="form-control" required placeholder="Project Name" />
+                <span asp-validation-for="City" class="text-danger"></span>
+            </div>
+        </div>
+
+        
+        <div class="form-group">
+                <label>Date of Birth</label>
+            <div class="row-group">
+            <select asp-for="Day" class="form-control">
+                @for (int i = 1; i <= 31; i++)
+                {
+                    <option value="@i">@i</option>
+                }
+            </select>
+                <select asp-for="Month" class="form-control">
+                    @for (int i = 1; i <= 12; i++)
+                    {
+                        <option value="@i">@System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(i)</option>
+                    }
+                </select>
+                <select asp-for="Year" class="form-control">
+                    @for (int i = DateTime.Now.Year; i >= 1900; i--)
+                    {
+                        <option value="@i">@i</option>
+                    }
+                </select>
+
+            </div>
+        </div>
+
+        
+        <button type="submit" class="btn btn-member-form">Save</button>
+    </form>
+</div>
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/member/CreateEditMember.css" asp-append-version="true" />
+}
+
+@section Scripts {
+    <script src="~/js/member/CreateEditMember.js" asp-append-version="true"></script>
+    <script src="~/js/member/ModalImg.js" asp-append-version="true"></script>
+}

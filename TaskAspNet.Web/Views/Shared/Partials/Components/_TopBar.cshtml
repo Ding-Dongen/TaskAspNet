@@ -1,0 +1,20 @@
+﻿
+
+<div>
+	<div>
+		@if (signInManager.IsSignedIn(User))
+		{
+			@* var user = await userManager.GetUserAsync(User);
+			<span>Hello, @user.FirstName @user.LastName</span> *@
+
+			<a asp-action="LogOut" asp-controller="Auth">Log Out</a>
+
+		}else 
+		{
+			<a asp-action="CreateAcc" asp-controller="Auth">Create Account</a>
+			<a asp-action="LogIn" asp-controller="Auth">Log In</a>
+		}
+
+
+	</div>
+</div>

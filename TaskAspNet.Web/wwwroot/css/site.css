@@ -1,0 +1,195 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+
+
+:root {
+    --Font-Primary: "Nunito", sans-serif;
+    --Font-Admin: "Poppins", sans-serif;
+    --Font-Logo: "Comfortaa", sans-serif;
+    --Body-Light: #637085;
+    --Body-Dark: #28263B;
+    --Heading: #1A1926;
+    --Accent: #2D99FF;
+    --Basic-White: #ffffff;
+    --Background: #F1F3F7;
+    --Orange: #FF9640;
+    --Dark-Red: #E94D3F;
+    --Grey-100: #F5F7FA;
+    --Grey-200: #F0F1F5;
+    --Grey-300: #E8EAED;
+    --Grey-400: #E3E5E8;
+    --Font-Weight-100: 100;
+    --Font-Weight-200: 200;
+    --Font-Weight-300: 300;
+    --Font-Weight-400: 400;
+    --Font-Weight-500: 500;
+    --Font-Weight-600: 600;
+    --Font-Weight-700: 700;
+    --Font-Weight-800: 800;
+    --Font-Weight-900: 900;
+    --Border-100: #EBEEF2;
+    --Border-200: #E3E5E8;
+    --Border-300: #C6C8CC;
+    --Border-Radius: 1rem;
+    --accent-opacity-10: #2d99ff1a;
+}
+
+html, body {
+    font-family: var(--Font-Primary);
+    font-weight: var(--Font-Weight-400);
+    font-style: normal;
+    line-height: normal;
+    font-size: 16px;
+    margin: 0;
+    padding: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--Font-Primary);
+    margin: 0;
+    padding: 0;
+}
+
+h1 {
+    font-size: 36px;
+}
+
+h2 {
+    font-size: 32px;
+}
+
+h3 {
+    font-size: 28px;
+}
+
+h4 {
+    font-size: 24px;
+}
+
+h5 {
+    font-size: 20px;
+}
+
+h6 {
+    font-size: 18px;
+}
+
+p {
+    margin: 0;
+    padding: 0;
+}
+
+
+
+/*Base structure with menu command topbar*/
+
+.menu-portal {
+    font-family: Arial, sans-serif;
+    background-color: var(--background-color);
+    margin: 0;
+    display: grid;
+    grid-template-columns: minmax(50px, 270px) 1fr;
+    grid-template-rows: auto 1fr;
+    grid-template-areas:
+        "logo topbar"
+        "sidebar main";
+    height: 100dvh;
+}
+
+.company-logo {
+    grid-area: logo;
+    border-right: 1px solid var(--Border-200);
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: var(--Background)
+}
+
+.logo {
+    font-size: 26px;
+    font-weight: bold;
+    font-family: var(--Font-Logo);
+    text-decoration: none;
+    color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0 1rem;
+}
+
+.company-logo span {
+    font-size: 26px;
+    font-weight: var(--Font-Weight-700);
+    font-family: var(--Font-Logo);
+    text-decoration: none;
+    color: var(--primary-color);
+}
+
+.sidebar {
+    grid-area: sidebar;
+    border-right: 1px solid var(--Border-200);
+    padding: 1rem;
+    background-color: var(--Background)
+}
+
+.topbar {
+    grid-area: topbar;
+    border-bottom: 1px solid var(--Border-200);
+    padding: 1rem 2rem;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 5rem;
+    align-items: center;
+    background-color: var(--Background)
+}
+
+.main-content {
+    grid-area: main;
+    padding: 2rem;
+    background-color: var(--Background)
+}
+
+
+
+/* // navigation */
+
+.navigation-link {
+    display: flex;
+    align-items: start;
+    flex-direction: column;
+    margin: 2rem 0;
+    gap: 1rem;
+    padding: 1rem;
+    color: var(--text-color);
+    border-radius: var(--border-radius);
+    transition: background-color 0.3s;
+}
+
+.links {
+    text-decoration: none;
+    background-color: transparent;
+    padding: 1rem 2rem 1rem 1rem;
+    border-radius: var(--Border-Radius);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+    .links span {
+        color: var(--Heading);
+        font-size: 1rem;
+        font-weight: var(--Font-Weight-400);
+    }
+
+    .links:hover {
+        background-color: var(--accent-opacity-10);
+        color: var(--Accent);
+    }
+
+    .active {
+        background-color: var(--accent-opacity-10);
+        color: var(--Accent);
+    }

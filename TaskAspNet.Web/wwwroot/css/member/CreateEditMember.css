@@ -1,0 +1,290 @@
+/* Create Project form Styles */
+
+.wrapper-project-form {
+    background: white;
+    padding: 2rem;
+    width: 450px;
+    border-radius: 12px;
+    border: 1px solid #d1d5db;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Image Upload Styles */
+.image-upload {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 2rem;
+    border: 2px dashed #ccc;
+    border-radius: 50%;
+    width: 9.375rem;
+    height: 9.375rem;
+    cursor: pointer;
+}
+
+.fa-camera {
+    font-size: 1rem;
+    color: #ccc;
+}
+
+.wrapper-camera {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #ccc;
+    border-radius: 50%;
+    padding: 1rem;
+    background-color: rgba(51, 51, 51, 0.70);
+}
+
+/* Form Labels & Inputs */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    border-radius: 8px;
+    background: white;
+}
+
+.name-group {
+    display: flex;
+    gap: 10px;
+}
+
+.row-group {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    justify-content: space-between;
+}
+
+/* Make sure each input takes equal space */
+.row-group .input-box {
+    flex: 1;
+    min-width: 0;
+}
+
+/* Ensure labels and inputs inside input-box are properly aligned */
+.input-box label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+/* Ensure consistent sizing */
+.input-box input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+/* Button */
+.btn-member-form {
+    width: 100%;
+    background-color: #1a73e8;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.btn-member-form:hover {
+    background-color: #1669d8;
+}
+
+/* Modal Styles */
+.upload-modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.upload-modal-content {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 500px;
+    position: relative;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.close-modal {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    cursor: pointer;
+    font-size: 1.5rem;
+    color: #666;
+}
+
+.close-modal:hover {
+    color: #333;
+}
+
+/* Preview Image */
+.preview img {
+    max-width: 100%;
+    margin-top: 8px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/*Memeber search container*/
+
+/* create-project-chips.css */
+
+/*.error {
+    color: red;
+}
+
+.memberSearchContainer {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    border: 1px solid #ccc;
+    padding: 4px;
+    border-radius: 4px;
+    margin-top: 6px;
+    margin-bottom: 8px;
+    width: 100%;
+}
+
+.chips-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.memberSearchContainer input {
+    border: none;
+    outline: none;
+    flex: 1;
+    min-width: 120px;
+}
+
+#memberSearchResults {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    max-height: 120px;
+    overflow-y: auto;
+}
+
+    #memberSearchResults li {
+        padding: 4px 8px;
+        cursor: pointer;
+    }
+
+        #memberSearchResults li:hover {
+            background-color: #f0f0f0;
+        }
+
+.chip {
+    background-color: var(--Grey-300);
+    border-radius: 16px;
+    padding: 4px 8px;
+    display: inline-flex;
+    align-items: center;
+    margin-right: 4px;
+}
+
+    .chip .remove-x {
+        margin-left: 6px;
+        cursor: pointer;
+        font-weight: bold;
+    }*/
+
+
+/*modal for images*/
+
+/*.image-upload {
+    width: 100px;
+    height: 100px;
+    border: 2px dashed #ccc;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    margin: 0 auto 15px;*/
+    /*display: inline-block;*/
+/*}
+
+
+.image-upload {
+    width: 100px;
+    height: 100px;
+    border: 1px dashed var(--Border-300);
+    border-radius: 1.875rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    margin: 0 auto 15px;
+}
+
+.wrapper-camera {
+    border: 20px solid #ccc;
+    border-radius: 50%;
+    background-color: rgba(51, 51, 51, 0.70);
+}
+
+.image-upload i {
+    font-size: 15px;
+    color: #888;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.upload-modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+}*/
