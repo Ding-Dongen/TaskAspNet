@@ -1,55 +1,83 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using TaskAspNet.Data.Models;
 
-namespace TaskAspNet.Data.Entities;
-
-public class MemberEntity
+namespace TaskAspNet.Data.Entities
 {
-    public int Id { get; set; }
+    public class MemberEntity
+    {
+        public int Id { get; set; }
 
-    [Required]
-    [StringLength(50)]
-    public string FirstName { get; set; } = string.Empty; 
+        [Required, StringLength(50)]
+        public string FirstName { get; set; } = string.Empty;
 
-    [Required]
-    [StringLength(50)]
-    public string LastName { get; set; } = string.Empty; 
+        [Required, StringLength(50)]
+        public string LastName { get; set; } = string.Empty;
 
-    [Required]
-    [EmailAddress]
-    [StringLength(100)]
-    public string Email { get; set; } = string.Empty; 
+        [Required, EmailAddress, StringLength(100)]
+        public string Email { get; set; } = string.Empty;
 
-    [Required]
-    [Phone]
-    [StringLength(20)]
-    public string Phone { get; set; } = string.Empty; 
+        [Required]
+        public int JobTitleId { get; set; }
+        public JobTitleEntity JobTitle { get; set; } = null!;
 
-    [Required]
-    public int JobTitleId { get; set; }
+        [Required, DataType(DataType.Date)]
+        public DateTime DateOfBirth { get; set; }
 
-    public JobTitleEntity JobTitle { get; set; } = null!;
+        public string? ProfileImageUrl { get; set; }
+        public string UserId { get; set; } = string.Empty;
 
-    [Required]
-    [StringLength(200)]
-    public string Address { get; set; } = string.Empty;
+        // ✅ Multiple addresses instead of a single "Address"
+        public List<MemberAddressEntity> Addresses { get; set; } = new List<MemberAddressEntity>();
 
-    [Required]
-    [StringLength(10)]
-    public string ZipCode { get; set; } = string.Empty; 
+        // ✅ Multiple phones instead of a single "Phone"
+        public List<MemberPhoneEntity> Phones { get; set; } = new List<MemberPhoneEntity>();
 
-    [Required]
-    [StringLength(100)]
-    public string City { get; set; } = string.Empty; 
-
-    [Required]
-    [DataType(DataType.Date)]
-    public DateTime DateOfBirth { get; set; }
-
-    public string? ProfileImageUrl { get; set; } 
-
-    public List<ProjectMemberEntity> ProjectMembers { get; set; } = new();
-
-
+        // Example: If you also keep project membership
+        public List<ProjectMemberEntity> ProjectMembers { get; set; } = new();
+    }
 }
+
+
+
+//using System.ComponentModel.DataAnnotations;
+
+
+//namespace TaskAspNet.Data.Entities;
+
+//public class MemberEntity
+//{
+//    public int Id { get; set; }
+
+//    [Required]
+//    [StringLength(50)]
+//    public string FirstName { get; set; } = string.Empty;
+
+//    [Required]
+//    [StringLength(50)]
+//    public string LastName { get; set; } = string.Empty;
+
+//    [Required]
+//    [EmailAddress]
+//    [StringLength(100)]
+//    public string Email { get; set; } = string.Empty;
+
+//    [Required]
+//    public int JobTitleId { get; set; }
+
+//    public JobTitleEntity JobTitle { get; set; } = null!;
+
+//    [Required]
+//    [DataType(DataType.Date)]
+//    public DateTime DateOfBirth { get; set; }
+
+//    public string? ProfileImageUrl { get; set; }
+
+//    public List<ProjectMemberEntity> ProjectMembers { get; set; } = new();
+
+//    public List<MemberPhoneEntity> Phones { get; set; } = new();
+
+//    public List<MemberAddressEntity> Addresses { get; set; } = new();
+
+//    public string UserId { get; set; } = string.Empty;
+
+
+//}

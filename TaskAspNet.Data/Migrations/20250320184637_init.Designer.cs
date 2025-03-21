@@ -12,7 +12,7 @@ using TaskAspNet.Data.Context;
 namespace TaskAspNet.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250319115045_init")]
+    [Migration("20250320184637_init")]
     partial class init
     {
         /// <inheritdoc />

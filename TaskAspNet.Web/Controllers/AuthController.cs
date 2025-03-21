@@ -7,15 +7,32 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using TaskAspNet.Business.Services;
 using TaskAspNet.Data.Models;
+using TaskAspNet.Business.Interfaces;
+using TaskAspNet.Business.Dtos;
 
 namespace TaskAspNet.Web.Controllers
 {
-    
-    public class AuthController(UserService userService, SignInManager<AppUser> signInManager, UserManager<AppUser> userManager) : Controller
+    public class AuthController : Controller
     {
-        private readonly UserService _userService = userService;
-        private readonly SignInManager<AppUser> _signInManager = signInManager;
-        private readonly UserManager<AppUser> _userManager = userManager;
+        private readonly UserService _userService;
+        private readonly SignInManager<AppUser> _signInManager;
+        private readonly UserManager<AppUser> _userManager;
+        private readonly IMemberService _memberService;
+        private readonly IWebHostEnvironment _webHostEnvironment;
+
+        public AuthController(
+            UserService userService,
+            SignInManager<AppUser> signInManager,
+            UserManager<AppUser> userManager,
+            IMemberService memberService,
+            IWebHostEnvironment webHostEnvironment)
+        {
+            _userService = userService;
+            _signInManager = signInManager;
+            _userManager = userManager;
+            _memberService = memberService;
+            _webHostEnvironment = webHostEnvironment;
+        }
 
         public IActionResult CreateAcc()
         {
@@ -23,24 +40,39 @@ namespace TaskAspNet.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAcc(UserRegistrationForm form)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateAcc(UserRegistrationForm model)
         {
             if (!ModelState.IsValid)
-            return View(form);
-
-            var result = await _userService.CreateUserAsync(form);
-
-            if (result)
             {
-                var user = await _userManager.FindByEmailAsync(form.Email);
-                if (user != null) {
-                    await _signInManager.SignInAsync(user, isPersistent: false);
-                    return RedirectToAction("Members", "Admin");
-                }
+                return View(model);
             }
-            ModelState.AddModelError("", "User was not created.");
-            return View(form);
-            
+
+            try
+            {
+                var result = await _userService.CreateUserAsync(model);
+                if (result)
+                {
+                    var user = await _userManager.FindByEmailAsync(model.Email);
+                    if (user != null)
+                    {
+                        await _signInManager.SignInAsync(user, isPersistent: false);
+                        return RedirectToAction("CreateMember", "Member", new { 
+                            fullName = model.FullName,
+                            email = model.Email,
+                            userId = user.Id
+                        });
+                    }
+                }
+                
+                ModelState.AddModelError("", "Failed to create user account.");
+                return View(model);
+            }
+            catch (InvalidOperationException ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+                return View(model);
+            }
         }
 
         public IActionResult LogIn(string? returnUrl = null)
@@ -66,17 +98,15 @@ namespace TaskAspNet.Web.Controllers
                 var roles = await _userManager.GetRolesAsync(user);
 
                 var claims = new List<Claim>
-        {
-            new Claim(ClaimTypes.Name, user.Email)
-        };
+                {
+                    new Claim(ClaimTypes.Name, user.Email)
+                };
 
-                
                 claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
 
                 var claimsIdentity = new ClaimsIdentity(claims, IdentityConstants.ApplicationScheme);
                 var principal = new ClaimsPrincipal(claimsIdentity);
 
-               
                 await HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);
                 await HttpContext.SignInAsync(IdentityConstants.ApplicationScheme, principal);
 

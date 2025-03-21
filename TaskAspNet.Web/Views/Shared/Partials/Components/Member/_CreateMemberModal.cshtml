@@ -1,0 +1,161 @@
+@model MemberDto
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/member/CreateEditMember.css" asp-append-version="true" />
+}
+
+@section Scripts {
+    <script src="~/js/member/CreateEditMember.js" asp-append-version="true"></script>
+    <script src="~/js/member/ModalImg.js" asp-append-version="true"></script>
+}
+
+<style>
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        user-select: none;
+    }
+
+    .modal-content {
+        background-color: white;
+        padding: 20px;
+        border-radius: 5px;
+        max-width: 800px;
+        width: 90%;
+        max-height: 90vh;
+        overflow-y: auto;
+        position: relative;
+        pointer-events: auto;
+    }
+
+    .modal-header {
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .modal-title {
+        margin: 0;
+        font-size: 1.5em;
+    }
+
+    .modal-body {
+        padding: 10px 0;
+    }
+
+    /* Prevent text selection */
+    * {
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+
+    /* Allow text selection in form inputs */
+    input, select, textarea {
+        -webkit-user-select: text;
+        -moz-user-select: text;
+        -ms-user-select: text;
+        user-select: text;
+    }
+</style>
+
+<div id="createMemberModal" class="modal-overlay">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">Complete Your Profile</h5>
+        </div>
+        <div class="modal-body">
+            <div id="createMemberFormContainer">
+                @await Html.PartialAsync("~/Views/Shared/Partials/Components/Member/_CreateEditMember.cshtml", Model)
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Store the beforeunload handler function
+        const beforeUnloadHandler = function(e) {
+            e.preventDefault();
+            e.returnValue = '';
+            return '';
+        };
+
+        // Add the beforeunload event listener
+        window.addEventListener('beforeunload', beforeUnloadHandler);
+
+        // Prevent right-click
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            return false;
+        });
+
+        // Prevent keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            // Prevent Alt+F4
+            if (e.altKey && e.key === 'F4') {
+                e.preventDefault();
+                return false;
+            }
+            // Prevent Ctrl+W
+            if (e.ctrlKey && e.key === 'w') {
+                e.preventDefault();
+                return false;
+            }
+        });
+
+        // Handle form submission
+        const form = document.getElementById('memberForm');
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const formData = new FormData(this);
+                
+                fetch(this.action, {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => {
+                    const contentType = response.headers.get('content-type');
+                    if (contentType && contentType.includes('application/json')) {
+                        return response.json();
+                    } else {
+                        return response.text();
+                    }
+                })
+                .then(data => {
+                    if (typeof data === 'object' && data.success) {
+                        // Remove the beforeunload event listener using the stored reference
+                        window.removeEventListener('beforeunload', beforeUnloadHandler);
+                        
+                        // Close the modal by removing it from the DOM
+                        const modal = document.getElementById('createMemberModal');
+                        if (modal) {
+                            modal.remove();
+                        }
+                        
+                        // Navigate to the project index
+                        window.location.href = '/Project/Index';
+                    } else {
+                        // If the response is HTML (validation errors), update the form container
+                        document.getElementById('createMemberFormContainer').innerHTML = data;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while creating the member.');
+                });
+            });
+        }
+    });
+</script> 

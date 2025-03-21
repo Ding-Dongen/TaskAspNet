@@ -8,7 +8,80 @@
             openModal("createMemberModal");
         });
     }
+    // add phone and address
+    initializeAddressAndPhoneHandlers();
+    initializeImageModalHandlers();
 });
+
+function initializeAddressAndPhoneHandlers() {
+    // Address handlers
+    document.querySelectorAll('.btn-add-address').forEach(button => {
+        button.addEventListener('click', function() {
+            const type = this.dataset.type;
+            addAddress(type);
+        });
+    });
+
+    // Phone handlers
+    document.querySelectorAll('.btn-add-phone').forEach(button => {
+        button.addEventListener('click', function() {
+            const type = this.dataset.type;
+            addPhone(type);
+        });
+    });
+}
+
+function addAddress(type) {
+    const container = document.getElementById("addressesContainer");
+    const index = container.querySelectorAll(".address-block").length;
+
+    const html = `
+        <div class="address-block" data-type="${type}">
+            <div class="address-header">
+                <span class="address-type">${type}</span>
+                <button type="button" class="btn-remove" onclick="removeThis(this)">
+                    <i class="fa-solid fa-times"></i>
+                </button>
+            </div>
+            <input type="hidden" name="Addresses[${index}].AddressType" value="${type}" />
+            <div class="form-row">
+                <input name="Addresses[${index}].Address" class="form-control" placeholder="Street Address" />
+            </div>
+            <div class="form-row">
+                <input name="Addresses[${index}].ZipCode" class="form-control" placeholder="Zip Code" />
+            </div>
+            <div class="form-row">
+                <input name="Addresses[${index}].City" class="form-control" placeholder="City" />
+            </div>
+        </div>
+    `;
+    container.insertAdjacentHTML("beforeend", html);
+}
+
+function addPhone(type) {
+    const container = document.getElementById("phonesContainer");
+    const index = container.querySelectorAll(".phone-block").length;
+
+    const html = `
+        <div class="phone-block" data-type="${type}">
+            <div class="phone-header">
+                <span class="phone-type">${type}</span>
+                <button type="button" class="btn-remove" onclick="removeThis(this)">
+                    <i class="fa-solid fa-times"></i>
+                </button>
+            </div>
+            <input type="hidden" name="Phones[${index}].PhoneType" value="${type}" />
+            <div class="form-row">
+                <input name="Phones[${index}].Phone" class="form-control" placeholder="Phone Number" />
+            </div>
+        </div>
+    `;
+    container.insertAdjacentHTML("beforeend", html);
+}
+
+function removeThis(button) {
+    button.closest(".address-block, .phone-block")?.remove();
+}
 
 /*Edit member modal*/
 function openEditModal(memberId) {
@@ -129,9 +202,6 @@ function initializeImageModalHandlers() {
         });
     }
 }
-
-// Initialize handlers for the create form when the page loads
-document.addEventListener("DOMContentLoaded", initializeImageModalHandlers);
 
 // -- OPEN UPLOAD MODAL --
 const openUploadModalBtn = document.getElementById("openUploadModal");

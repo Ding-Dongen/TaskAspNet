@@ -1,6 +1,4 @@
-﻿
-
-using System;
+﻿using System;
 using System.Runtime.CompilerServices;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
@@ -56,6 +54,4 @@ public class UserService(UserManager<AppUser> userManager, RoleService roleServi
         var result = await _userManager.DeleteAsync(user);
         return result.Succeeded;
     }
-
-
 }

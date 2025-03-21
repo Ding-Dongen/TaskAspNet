@@ -10,13 +10,25 @@ public class MemberService(IMemberRepository memberRepository) : IMemberService
 {
     private readonly IMemberRepository _memberRepository = memberRepository;
 
-    public async Task<MemberDto> AddMemberAsync(MemberDto member)
-    {
-        var memberEntity = MemberFactory.CreateEntity(member);
-        await _memberRepository.AddAsync(memberEntity);
-        await _memberRepository.SaveAsync();
-        return member;
-    }
+
+    public async Task<MemberDto> AddMemberAsync(MemberDto memberDto)
+{
+    var memberEntity = MemberFactory.CreateEntity(memberDto);
+    
+    await _memberRepository.AddAsync(memberEntity);
+    await _memberRepository.SaveAsync();
+
+    return MemberFactory.CreateDto(memberEntity);
+}
+
+
+    //public async Task<MemberDto> AddMemberAsync(MemberDto member)
+    //{
+    //    var memberEntity = MemberFactory.CreateEntity(member);
+    //    await _memberRepository.AddAsync(memberEntity);
+    //    await _memberRepository.SaveAsync();
+    //    return member;
+    //}
 
     public async Task<IEnumerable<MemberDto>> GetAllMembersAsync()
     {

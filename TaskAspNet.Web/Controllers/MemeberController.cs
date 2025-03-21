@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using TaskAspNet.Business.Dtos;
 using TaskAspNet.Business.Interfaces;
 [Authorize]
-[Route("Member")] 
+[Route("[controller]")] 
 public class MemberController : Controller
 {
     private readonly IMemberService _memberService;
@@ -65,10 +65,12 @@ public class MemberController : Controller
 
         return Ok(members);
     }
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin, SuperAdmin, User")]
     [HttpGet]
-    public async Task<IActionResult> Create()
+    public async Task<IActionResult> Create(string fullName = null, string email = null, string userId = null)
     {
+        Console.WriteLine($"Create action called with: fullName={fullName}, email={email}, userId={userId}");
+        
         var jobTitles = await _memberService.GetAllJobTitlesAsync();
 
         var model = new MemberDto
@@ -80,9 +82,21 @@ public class MemberController : Controller
             }).ToList()
         };
 
+        // If we have pre-filled data from user registration, use it
+        if (!string.IsNullOrEmpty(fullName) && !string.IsNullOrEmpty(email) && !string.IsNullOrEmpty(userId))
+        {
+            Console.WriteLine("Pre-filling form with user data");
+            var names = fullName.Split(' ', 2);
+            model.FirstName = names[0];
+            model.LastName = names.Length > 1 ? names[1] : "";
+            model.Email = email;
+            model.UserId = userId;
+            Console.WriteLine($"Pre-filled data: FirstName={model.FirstName}, LastName={model.LastName}, Email={model.Email}, UserId={model.UserId}");
+        }
+
         return View("~/Views/Shared/Partials/Components/Member/_CreateEditMember.cshtml", model);
     }
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin, SuperAdmin, User")]
     [HttpPost("Create")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(MemberDto memberDto)
@@ -119,7 +133,11 @@ public class MemberController : Controller
 
             memberDto.DateOfBirth = new DateTime(memberDto.Year, memberDto.Month, memberDto.Day);
             string imagePath = await HandleImageUploadAsync(memberDto.ImageData, "members");
-            memberDto.ImageData.CurrentImage = imagePath;
+            if (!string.IsNullOrEmpty(imagePath))
+            {
+                memberDto.ProfileImageUrl = imagePath;
+                memberDto.ImageData.CurrentImage = imagePath;
+            }
 
             var createdMember = await _memberService.AddMemberAsync(memberDto);
             if (createdMember == null)
@@ -140,7 +158,7 @@ public class MemberController : Controller
             return View("~/Views/Shared/Partials/Components/Member/_CreateEditMember.cshtml", memberDto);
         }
     }
-    [Authorize(Roles = "Admin")]
+    [Authorize]
     [HttpGet("")]  
     [HttpGet("Index")]  
     public async Task<IActionResult> Index()
@@ -178,7 +196,7 @@ public class MemberController : Controller
 
         return View(model);
     }
-    [Authorize(Roles = "Admin")]
+    [Authorize]
     private async Task<string> HandleImageUploadAsync(UploadSelectImgDto imageData, string folderName)
     {
         if (imageData.UploadedImage != null)
@@ -204,7 +222,7 @@ public class MemberController : Controller
         return null!;
     }
 
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin, SuperAdmin")]
     [HttpPost("Delete")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Delete(int id)
@@ -220,7 +238,7 @@ public class MemberController : Controller
         return RedirectToAction("Index");
     }
 
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin, SuperAdmin")]
     [HttpPost("Edit")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(MemberDto member)
@@ -237,16 +255,135 @@ public class MemberController : Controller
             return PartialView("~/Views/Shared/Partials/Components/Member/_CreateEditMember.cshtml", member);
         }
 
-        var updatedMember = await _memberService.UpdateMemberAsync(member.Id, member);
-        if (updatedMember == null)
+        try
         {
-            return NotFound();
-        }
+            // Handle image upload
+            string imagePath = await HandleImageUploadAsync(member.ImageData, "members");
+            if (!string.IsNullOrEmpty(imagePath))
+            {
+                member.ProfileImageUrl = imagePath;
+                member.ImageData.CurrentImage = imagePath;
+            }
 
-        return RedirectToAction("Index");
+            var updatedMember = await _memberService.UpdateMemberAsync(member.Id, member);
+            if (updatedMember == null)
+            {
+                return NotFound();
+            }
+
+            return RedirectToAction("Index");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Exception occurred during edit: {ex.Message}");
+            Console.WriteLine($"Stack trace: {ex.StackTrace}");
+            ModelState.AddModelError("", "An error occurred while updating the member.");
+            return PartialView("~/Views/Shared/Partials/Components/Member/_CreateEditMember.cshtml", member);
+        }
     }
 
+    [Authorize]
+    [HttpGet("CreateMember")]
+    public async Task<IActionResult> CreateMember(string fullName, string email, string userId)
+    {
+        var jobTitles = await _memberService.GetAllJobTitlesAsync();
+        var predefinedImagesFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images", "membericon");
+        var imageFiles = Directory.GetFiles(predefinedImagesFolder)
+                                  .Where(file => file.EndsWith(".png", StringComparison.OrdinalIgnoreCase)
+                                              || file.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase)
+                                              || file.EndsWith(".svg", StringComparison.OrdinalIgnoreCase)
+                                              || file.EndsWith(".jpeg", StringComparison.OrdinalIgnoreCase))
+                                  .Select(Path.GetFileName)
+                                  .Where(fileName => fileName != null)
+                                  .Select(fileName => fileName!)
+                                  .ToList();
 
+        var names = fullName.Split(' ', 2);
+        var firstName = names[0];
+        var lastName = names.Length > 1 ? names[1] : "";
 
+        var model = new MemberDto
+        {
+            FirstName = firstName,
+            LastName = lastName,
+            Email = email,
+            UserId = userId,
+            AvailableJobTitles = jobTitles.Select(jt => new SelectListItem
+            {
+                Value = jt.Id.ToString(),
+                Text = jt.Title
+            }).ToList(),
+            ImageData = new UploadSelectImgDto
+            {
+                PredefinedImages = imageFiles
+            }
+        };
 
+        return View("~/Views/Shared/Partials/Components/Member/_CreateMemberModal.cshtml", model);
+    }
+
+    [Authorize]
+    [HttpPost("CreateMember")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> CreateMember(MemberDto memberDto)
+    {
+        if (!ModelState.IsValid)
+        {
+            var jobTitles = await _memberService.GetAllJobTitlesAsync();
+            memberDto.AvailableJobTitles = jobTitles.Select(jt => new SelectListItem
+            {
+                Value = jt.Id.ToString(),
+                Text = jt.Title
+            }).ToList();
+
+            return PartialView("~/Views/Shared/Partials/Components/Member/_CreateEditMember.cshtml", memberDto);
+        }
+
+        try
+        {
+            // Set default date if not provided
+            if (memberDto.Year <= 0 || memberDto.Month <= 0 || memberDto.Day <= 0)
+            {
+                memberDto.DateOfBirth = DateTime.Now;
+            }
+            else
+            {
+                try
+                {
+                    memberDto.DateOfBirth = new DateTime(memberDto.Year, memberDto.Month, memberDto.Day);
+                }
+                catch (ArgumentOutOfRangeException)
+                {
+                    memberDto.DateOfBirth = DateTime.Now;
+                }
+            }
+
+            // Handle image upload
+            if (memberDto.ImageData != null)
+            {
+                string imagePath = await HandleImageUploadAsync(memberDto.ImageData, "members");
+                if (!string.IsNullOrEmpty(imagePath))
+                {
+                    memberDto.ProfileImageUrl = imagePath;
+                    memberDto.ImageData.CurrentImage = imagePath;
+                }
+            }
+
+            var createdMember = await _memberService.AddMemberAsync(memberDto);
+            if (createdMember == null)
+            {
+                ModelState.AddModelError("", "Error creating the member.");
+                return PartialView("~/Views/Shared/Partials/Components/Member/_CreateEditMember.cshtml", memberDto);
+            }
+
+            return RedirectToAction("Index", "Member");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Exception occurred: {ex.Message}");
+            Console.WriteLine($"Stack trace: {ex.StackTrace}");
+            ModelState.AddModelError("", "An error occurred while creating the member.");
+            return PartialView("~/Views/Shared/Partials/Components/Member/_CreateEditMember.cshtml", memberDto);
+        }
+    }
 }

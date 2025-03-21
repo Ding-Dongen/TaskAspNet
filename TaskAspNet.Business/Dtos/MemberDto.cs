@@ -1,59 +1,53 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using TaskAspNet.Data.Entities;
 
-namespace TaskAspNet.Business.Dtos;
-
-public class MemberDto
+namespace TaskAspNet.Business.Dtos
 {
-    public int Id { get; set; } // Included for updates
+    public class MemberDto
+    {
+        public int Id { get; set; }
 
-    [Required]
-    public string FirstName { get; set; } = string.Empty;
+        [Required, StringLength(50)]
+        public string FirstName { get; set; } = string.Empty;
 
-    [Required]
-    public string LastName { get; set; } = string.Empty;
+        [Required, StringLength(50)]
+        public string LastName { get; set; } = string.Empty;
 
-    [Required]
-    [StringLength(100)]
-    [EmailAddress]
-    public string Email { get; set; } = string.Empty;
+        [Required, EmailAddress, StringLength(100)]
+        public string Email { get; set; } = string.Empty;
 
-    [Required]
-    [StringLength(20)]
-    public string? Phone { get; set; }
+        [Required]
+        public int JobTitleId { get; set; }
+        public JobTitleDto? JobTitle { get; set; }
 
-    [Required]
-    public int JobTitleId { get; set; }
-    public JobTitleDto? JobTitle { get; set; }
-    public List<SelectListItem> AvailableJobTitles { get; set; } = new();
+        // For Date of Birth
+        [Required, DataType(DataType.Date)]
+        public DateTime DateOfBirth { get; set; }
 
-   [Required]
-    [StringLength(200)]
-    public string Address { get; set; } = string.Empty;
+        // Break down the date for UI dropdowns
+        [Required]
+        public int Day { get; set; }
+        [Required]
+        public int Month { get; set; }
+        [Required]
+        public int Year { get; set; }
 
-    [Required]
-    [StringLength(10)]
-    public string ZipCode { get; set; } = string.Empty;
+        public string? ProfileImageUrl { get; set; }
+        public UploadSelectImgDto ImageData { get; set; } = new UploadSelectImgDto();
 
-    [Required]
-    [StringLength(100)]
-    public string City { get; set; } = string.Empty;
+        // Multiple addresses instead of a single Address field
+        public List<MemberAddressDto> Addresses { get; set; } = new List<MemberAddressDto>();
 
-    [Required]
-    public int Day { get; set; }
+        // Multiple phones instead of a single Phone field
+        public List<MemberPhoneDto> Phones { get; set; } = new List<MemberPhoneDto>();
 
-    [Required]
-    public int Month { get; set; }
+        // (Optional) If you manage project memberships
+        public List<ProjectMemberEntity> ProjectMembers { get; set; } = new();
+        public List<ProjectDto> Projects { get; set; } = new();
 
-    [Required]
-    public int Year { get; set; }
-
-    public DateTime DateOfBirth { get; set; }
-
-    public UploadSelectImgDto ImageData { get; set; } = new UploadSelectImgDto();
-
-    //public IFormFile? ProfileImageFile { get; set; }
-
-    //public string? SelectedAvatar { get; set; }
+        // Additional
+        public List<SelectListItem> AvailableJobTitles { get; set; } = new();
+        public string UserId { get; set; } = string.Empty;
+    }
 }

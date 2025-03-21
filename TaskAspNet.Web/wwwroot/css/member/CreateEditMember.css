@@ -288,3 +288,75 @@
     justify-content: center;
     align-items: center;
 }*/
+
+/* Address and Phone Actions */
+.address-actions,
+.phone-actions {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.btn-add-address,
+.btn-add-phone {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: #fff;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-add-address:hover,
+.btn-add-phone:hover {
+    background: #f8f9fa;
+    border-color: #ced4da;
+}
+
+/* Address and Phone Blocks */
+.address-block,
+.phone-block {
+    background: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.address-header,
+.phone-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.address-type,
+.phone-type {
+    font-weight: 600;
+    color: #495057;
+}
+
+.btn-remove {
+    background: none;
+    border: none;
+    color: #dc3545;
+    cursor: pointer;
+    padding: 0.25rem;
+    transition: color 0.2s ease;
+}
+
+.btn-remove:hover {
+    color: #c82333;
+}
+
+.form-row {
+    margin-bottom: 0.75rem;
+}
+
+.form-row:last-child {
+    margin-bottom: 0;
+}

@@ -11,7 +11,11 @@ public class MemberRepository(AppDbContext context) : BaseRepository<MemberEntit
 
     public async Task<IEnumerable<MemberEntity>> GetMembersWithJobTitleAsync()
     {
-        return await _context.Members.Include(m => m.JobTitle).ToListAsync();
+        return await _context.Members
+            .Include(m => m.JobTitle)
+            .Include(m => m.Phones)
+            .Include(m => m.Addresses)
+            .ToListAsync();
     }
 
     public async Task<List<MemberEntity>> SearchMembersAsync(string searchTerm)

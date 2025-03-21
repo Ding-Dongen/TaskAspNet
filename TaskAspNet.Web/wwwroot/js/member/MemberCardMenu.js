@@ -67,3 +67,41 @@ document.querySelectorAll('.close-modal').forEach(button => {
         this.closest('.upload-modal-overlay').style.display = 'none';
     });
 });
+ // dropdown member card member information
+function toggleDropdown(memberId) {
+    const dropdownContent = document.getElementById(`dropdown-content-${memberId}`);
+    const button = event.currentTarget;
+    const dropdownText = button.querySelector('.dropdown-text');
+    
+    if (dropdownContent.style.display === 'none') {
+        dropdownContent.style.display = 'block';
+        dropdownText.textContent = 'Show Less';
+        button.classList.add('active');
+        
+        // Smooth animation
+        dropdownContent.style.maxHeight = dropdownContent.scrollHeight + "px";
+    } else {
+        dropdownContent.style.display = 'none';
+        dropdownText.textContent = 'Show More Details';
+        button.classList.remove('active');
+        
+        // Reset max height
+        dropdownContent.style.maxHeight = null;
+    }
+}
+
+function openDetailsModal(memberId) {
+    // Close the menu
+    toggleMenu(memberId);
+
+    // Get modal element
+    const modal = document.getElementById('detailsModal-' + memberId);
+
+    if (!modal) {
+        console.error('Details modal not found for memberId:', memberId);
+        return;
+    }
+
+    // Show modal
+    modal.style.display = 'block';
+}
